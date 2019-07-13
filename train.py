@@ -1,4 +1,4 @@
-import utils
+from src import utils
 from model import resnet
 from tensorflow import keras
 
@@ -28,7 +28,7 @@ def train():
     model.fit(
         train_dataset,
         epochs = 10,
-        callbacks = [tensorboard_cbk, check_callback]
+        callbacks = [check_callback]
     )
 
 if __name__ == "__main__":
