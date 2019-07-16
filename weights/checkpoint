@@ -1,0 +1,2 @@
+model_checkpoint_path: "small_resnet"
+all_model_checkpoint_paths: "small_resnet"

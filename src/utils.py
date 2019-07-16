@@ -5,7 +5,7 @@ import cv2 as cv
 import numpy as np
 import tensorflow as tf
 
-def get_train_images_from_csv(csv_path):
+def get_images_from_csv(csv_path, train=True):
     """
     从csv文件中读取numpy格式的image
     """
@@ -16,15 +16,21 @@ def get_train_images_from_csv(csv_path):
         for i, row in enumerate(read):
             # 第一行非数值
             if i != 0:
-                # 第0个数值为label 后面的是图像像素值
-                labels.append(row[0])
-                images_list.append(row[1:])
+                if train:
+                    # 第0个数值为label 后面的是图像像素值
+                    labels.append(row[0])
+                    images_list.append(row[1:])
+                else:
+                    images_list.append(row)
     # 转为ndarray 设为float32可以之后用opencv显示
     labels = np.array(labels, dtype="float32")
     images_list = np.array(images_list, dtype="float32")
     # 将图片shape恢复到 [n, h, w, c] 的样子
     images_list = images_list.reshape((-1, 28, 28, 1))
-    return images_list, labels
+    if train:
+        return images_list, labels
+    else:
+        return images_list
 
 def preprocess(labels, images):
     """
@@ -41,7 +47,7 @@ def mnist_train_dataset():
     """
     加载数据集
     """
-    image_list, labels = get_train_images_from_csv("./datasets/train.csv")
+    image_list, labels = get_images_from_csv("./datasets/train.csv")
     # Step1 加载数据集
     dataset = tf.data.Dataset.from_tensor_slices((labels, image_list))
     # Step2 打乱数据
@@ -51,6 +57,12 @@ def mnist_train_dataset():
     # Step4 设置batch size
     dataset = dataset.batch(64)
     return dataset
+
+def write_to_csv(csv_path, datasets):
+    with open(csv_path, 'a', newline="") as f:
+        write = csv.writer(f,dialect='excel')
+        write.writerow(["ImageId", "Label"])
+        write.writerows(datasets)
 
 def show_image(label, image):
     cv.imshow(str(label), image)
