@@ -7,7 +7,8 @@ model = resnet.small_resnet()
 model.load_weights("./weights/small_resnet")
 
 # load test images
-images_list = utils.get_images_from_csv("./datasets/test.csv", train=False) / 255
+images_list = utils.get_images_from_csv("./datasets/test.csv", train=False)
+images_list = utils.preprocess(images=images_list, train=False)
 
 # get predict result
 out = model.predict(images_list)

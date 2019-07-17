@@ -18,8 +18,7 @@ def train():
 
     callback = [
         # 使用tensorboard
-        keras.callbacks.TensorBoard(log_dir='./logs'),
-        PrintLR()
+        keras.callbacks.TensorBoard(log_dir='./logs')
     ]
 
     model.fit(
@@ -27,10 +26,6 @@ def train():
         epochs = 30,
         callbacks = callback
     )
-
-class PrintLR(tf.keras.callbacks.Callback):
-    def on_epoch_end(self, epoch, logs=None):
-        print('\nLearning rate for epoch {} is {}'.format(epoch + 1, model.optimizer.lr.numpy()))
 
 if __name__ == "__main__":
     train()

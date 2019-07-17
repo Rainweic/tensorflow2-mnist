@@ -32,16 +32,23 @@ def get_images_from_csv(csv_path, train=True):
     else:
         return images_list
 
-def preprocess(labels, images):
+def preprocess(labels=None, images=None, train=True):
     """
     预处理函数
     """
-    # 转为tensor 且对images进行归一化
-    labels = tf.cast(labels, dtype=tf.int32)
+    if train:
+        # 转为tensor 且对images进行归一化
+        labels = tf.cast(labels, dtype=tf.int32)
     # 用fit函数不需要one_hot编码
     # labels = tf.one_hot(labels, depth=10)
     images = tf.cast(images, dtype=tf.float32) / 255
-    return images, labels
+    # 减去均值
+    image_mean = tf.reduce_mean(images, axis=0)
+    images -= image_mean
+    if train:
+        return images, labels
+    else:
+        return images
 
 def mnist_train_dataset():
     """
